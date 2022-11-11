@@ -1,7 +1,5 @@
 package helper
 
-import "time"
-
 type ExtractToken struct {
 	Status  bool
 	Message string
@@ -14,76 +12,47 @@ type DataToken struct {
 	Username string
 	Phone    string
 }
-type GetData struct {
+
+type AllData struct {
 	TotalAllData int
-	Result       []Data
+	Category     []Category
 }
 
-type Data struct {
-	Id                int       `json:"id"`
-	User_id           int       `json:"user_id"`
-	Reward_Name       string    `json:"reward_name"`
-	Description       string    `json:"description"`
-	Img_Name          string    `json:"image"`
-	Ss_point          int       `json:"point_reward"`
-	Request_date      time.Time `json:"request_date"`
-	Status_validation int       `json:"status_validation"`
+type Category struct {
+	Bank_category string `json:"bank_category"`
+	Bank_list     []ListBank
 }
 
-type RequestRedeem struct {
-	User_id      int `json:"user_id" form:"user_id"`
-	Reward_id    int `json:"reward_id" form:"reward_id"`
-	Request_date time.Time
+type ListBank struct {
+	Bank_code string `json:"bank_code"`
+	Bank_name string `json:"bank_name"`
 }
 
-type TrxPoint struct {
-	Id          int
-	Trx_type_id int
-	Ss_point    int
+type Status struct {
+	Currency           string      `json:"currency"`
+	Fraud_status       string      `json:"fraud_status"`
+	Gross_amount       string      `json:"gross_amount"`
+	Merchant_id        string      `json:"merchant_id"`
+	Order_id           string      `json:"order_id"`
+	Payment_amounts    interface{} `json:"payment_amounts"`
+	Payment_type       string      `json:"payment_type"`
+	Signature_key      string      `json:"signature_key"`
+	Status_code        string      `json:"status_code"`
+	Status_message     string      `json:"status_message"`
+	Transaction_id     string      `json:"transaction_id"`
+	Transaction_status string      `json:"transaction_status"`
+	Transaction_time   string      `json:"transaction_time"`
+	Va_numbers         interface{} `json:"va_numbers"`
+	Permata_va_number  string      `json:"permata_va_number"`
 }
 
-type OwnPoint struct {
-	Id             int
-	Trx_date       time.Time
-	Ss_point_after int
+type VaNumbers struct {
+	Bank      string `json:"bank"`
+	Va_number string `json:"va_number"`
 }
 
-type Validate struct {
-	Id                int
-	User_id           int
-	Reward_id         int
-	Status_validation int
-	Validate_by       int
-	Validate_at       time.Time
-}
-
-type CurrentPoint struct {
-	Id              int
-	Trx_date        time.Time
-	Ss_point_before int
-	Ss_point_trx    int
-	Ss_point_after  int
-	Exp_date        time.Time
-}
-
-type TrxPointList struct {
-	Id          int
-	Trx_Type_Id int
-	Reward_Id   int
-	Ss_Point    int
-}
-
-type IsUsed struct {
-	Is_used int
-}
-
-type InsertNewRedeem struct {
-	Trx_date         time.Time
-	User_id          int
-	Is_branch        int
-	Trx_point_id     int
-	Reference_trx_id int
-	Ss_point_before  int
-	Ss_point_trx     int
-	Ss_point_after   int
+type ConfigAppEnv struct {
+	Server_key   string
+	Client_key   string
+	Midtrans_url string
 }

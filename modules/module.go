@@ -1,20 +1,23 @@
 package modules
 
 import (
-	"request-redeem/config"
-	"request-redeem/controller"
-	"request-redeem/handler"
-	"request-redeem/helper"
-	"request-redeem/router"
+	"topup-service/config"
+	"topup-service/controller"
+	"topup-service/handler"
+	csser "topup-service/helper/cart"
+	"topup-service/helper/payment"
+	"topup-service/router"
 )
 
 func RegisterModules(dbCon *config.DatabaseConnection, c *config.AppConfig) router.Controller {
-	reward := config.RepositoryFactory(dbCon)
+	cart := config.RepositoryPulsaFactory(dbCon)
+	cartService := csser.NewCartService(cart)
+	transaction := config.RepositoryPaymentFactory(dbCon)
+	transactionService := payment.NewTransactionService(transaction)
 	jwtService := handler.NewJWTService()
-	rewardService := helper.NewRewardService(reward)
-	controller := router.Controller{
-		Auth: controller.NewAuthController(rewardService, jwtService),
+	r := router.Controller{
+		Auth: controller.NewAuthController(jwtService, cartService, transactionService),
 	}
 
-	return controller
+	return r
 }

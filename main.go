@@ -4,15 +4,16 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"request-redeem/config"
-	"request-redeem/modules"
-	"request-redeem/router"
+	"topup-service/config"
+	"topup-service/modules"
+	"topup-service/router"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
+
 	con := config.GetConfig()
 	dbCon := config.NewDatabaseConnection(con)
 	controllers := modules.RegisterModules(dbCon, con)
@@ -28,7 +29,7 @@ func main() {
 		return c.String(http.StatusOK, "OK")
 	})
 
-	router.Routes(e, &controllers)
+	router.Router(e, &controllers)
 
 	server := config.GetServer()
 

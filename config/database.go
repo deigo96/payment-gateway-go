@@ -1,9 +1,8 @@
 package config
 
 import (
-	"fmt"
-
-	"gorm.io/driver/postgres"
+	_ "github.com/denisenkom/go-mssqldb"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -11,40 +10,36 @@ import (
 type DatabaseDriver string
 
 const (
-	PostgreSQL DatabaseDriver = "postgres"
+	SqlServer DatabaseDriver = "sqlserver"
 )
 
 type DatabaseConnection struct {
-	Driver     DatabaseDriver
-	PostgreSQL *gorm.DB
+	Driver    DatabaseDriver
+	SqlServer *gorm.DB
 }
 
 func NewDatabaseConnection(config *AppConfig) *DatabaseConnection {
 	var db DatabaseConnection
 
-	if config.Driver != "PostgreSQL" {
+	if config.DRIVER != "SqlServer" {
 		panic("Database driver not supported")
 	}
 
-	db.Driver = PostgreSQL
-	db.PostgreSQL = NewPostgreSQL(config)
+	db.Driver = SqlServer
+	db.SqlServer = NewSqlServer(config)
 
 	return &db
 }
 
-func NewPostgreSQL(config *AppConfig) *gorm.DB {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
-		config.DB_Host,
-		config.DB_User,
-		config.DB_Pass,
-		config.DB_Name,
-		config.DB_Port)
+func NewSqlServer(config *AppConfig) *gorm.DB {
+	dsn := "server=" + config.DB_HOST + ";user id=" + config.DB_USER + ";password=" + config.DB_PASS + ";database=" + config.DB_NAME + ";encrypt=disable;"
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
 	})
+
 	if err != nil {
 		panic(err)
 	}
@@ -53,8 +48,8 @@ func NewPostgreSQL(config *AppConfig) *gorm.DB {
 }
 
 func (db *DatabaseConnection) CloseConnection() {
-	if db.PostgreSQL != nil {
-		db, _ := db.PostgreSQL.DB()
+	if db.SqlServer != nil {
+		db, _ := db.SqlServer.DB()
 		db.Close()
 	}
 }
